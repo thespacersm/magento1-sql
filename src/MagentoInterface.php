@@ -21,10 +21,22 @@ interface MagentoInterface
 
     /**
      * @param $id
-     * @param $entityTypeId
-     * @return AbstractEntity
+     * @return Product
      */
-    public function getEntityById($id, $entityTypeId);
+    public function getProductById($id);
+
+    /**
+     * @param $sku
+     * @return Product
+     */
+    public function getProductBySku($sku);
+
+    /**
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function getUrlRewrites($offset, $limit);
 
     /**
      * @param $entityId

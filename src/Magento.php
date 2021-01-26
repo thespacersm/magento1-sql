@@ -6,6 +6,7 @@ use App\Model\AbstractEntity;
 use App\Model\Attribute;
 use App\Model\EntityType;
 use App\Model\Product;
+use App\Model\UrlRewrite;
 
 class Magento implements MagentoInterface
 {
@@ -51,6 +52,49 @@ class Magento implements MagentoInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getProductById($id)
+    {
+        $table = $this->getTable('catalog_product_entity');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE entity_id = {$id}
+        ;");
+
+        $product = null;
+        foreach ($rows as $row) {
+            $product = new Product($row, $this);
+        }
+
+        return $product;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getProductBySku($sku)
+    {
+        $table = $this->getTable('catalog_product_entity');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE sku = {$sku}
+        ;");
+
+        $product = null;
+        foreach ($rows as $row) {
+            $product = new Product($row, $this);
+        }
+
+        return $product;
+    }
+
+
+    /**
      * @return array
      */
     public function getEavAttributes()
@@ -70,6 +114,28 @@ class Magento implements MagentoInterface
 
         return $attributes;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUrlRewrites($offset, $limit)
+    {
+        $table = $this->getTable('core_url_rewrite');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        ;");
+
+        $urlRewrites = [];
+        foreach ($rows as $row) {
+            $urlRewrite = new UrlRewrite($row, $this);
+            $urlRewrites[] = $urlRewrite;
+        }
+
+        return $urlRewrites;
+    }
+
 
     /**
      * @inheritDoc
