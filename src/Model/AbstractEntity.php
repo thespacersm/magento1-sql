@@ -2,6 +2,9 @@
 
 namespace App\Model;
 
+use App\Magento;
+use App\MagentoInterface;
+
 abstract class AbstractEntity
 {
     /**
@@ -10,13 +13,21 @@ abstract class AbstractEntity
     protected $data;
 
     /**
+     * @var MagentoInterface
+     */
+    protected $magento;
+
+    /**
      * AbstractEntity constructor.
      * @param array $data
+     * @param MagentoInterface $magento
      */
-    public function __construct(array $data)
+    public function __construct(array $data, MagentoInterface $magento)
     {
         $this->data = $data;
+        $this->magento = $magento;
     }
+
 
     public function get($key, $default = null)
     {

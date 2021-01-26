@@ -4,24 +4,10 @@ namespace App\Model;
 
 
 use App\Magento;
+use App\MagentoInterface;
 
 class Product extends AbstractEntity
 {
-    /**
-     * @var Magento
-     */
-    protected $magento;
-
-    /**
-     * Product constructor.
-     * @param array $data
-     * @param Magento $magento
-     */
-    public function __construct(array $data, Magento $magento)
-    {
-        $this->magento = $magento;
-        parent::__construct($data);
-    }
 
     public function getId()
     {
@@ -31,6 +17,16 @@ class Product extends AbstractEntity
     public function getSku()
     {
         return $this->get('sku', null);
+    }
+
+    public function getAttributeValue($attributeCode, $storeId = 0)
+    {
+        return $this->magento->getEavAttributeValue(
+            $this->getId(),
+            'catalog_product',
+            $attributeCode,
+            $storeId
+        );
     }
 
 }
