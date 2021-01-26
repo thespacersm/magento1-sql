@@ -29,8 +29,8 @@ class Magento
         $rows = $this->rawSql->getRows("
         SELECT *
         FROM {$table}
-        OFFSET {$offset}
         LIMIT {$limit}
+        OFFSET {$offset}
         ;");
 
         $products = [];

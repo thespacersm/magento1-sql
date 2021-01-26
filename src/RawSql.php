@@ -18,11 +18,20 @@ class RawSql
         $this->connection = $conn;
     }
 
+    protected function query($sql)
+    {
+        $r = $this->connection->query($sql);
+        if (!$r) {
+            throw new \Exception(mysqli_error($this->connection));
+        }
+        return $r;
+    }
+
     public function getRows($sql)
     {
         $rows = [];
 
-        $result = $this->connection->query($sql);
+        $result = $this->query($sql);
 
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
