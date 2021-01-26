@@ -35,7 +35,7 @@ class Magento
 
         $products = [];
         foreach ($rows as $row) {
-            $product = new Product($row);
+            $product = new Product($row, $this);
             $products[] = $product;
         }
 
