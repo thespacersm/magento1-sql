@@ -125,6 +125,8 @@ class Magento implements MagentoInterface
         $rows = $this->rawSql->getRows("
         SELECT *
         FROM {$table}
+        LIMIT {$limit}
+        OFFSET {$offset}
         ;");
 
         $urlRewrites = [];
