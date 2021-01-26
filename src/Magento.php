@@ -75,6 +75,51 @@ class Magento implements MagentoInterface
     /**
      * @inheritDoc
      */
+    public function getUrlRewritesByProductId($id)
+    {
+        $table = $this->getTable('core_url_rewrite');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE product_id = {$id}
+        ;");
+
+        $urlRewrites = [];
+        foreach ($rows as $row) {
+            $urlRewrite = new UrlRewrite($row, $this);
+            $urlRewrites[] = $urlRewrite;
+        }
+
+        return $urlRewrites;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getUrlRewritesByCategoryId($id)
+    {
+        $table = $this->getTable('core_url_rewrite');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE category_id = {$id}
+        ;");
+
+        $urlRewrites = [];
+        foreach ($rows as $row) {
+            $urlRewrite = new UrlRewrite($row, $this);
+            $urlRewrites[] = $urlRewrite;
+        }
+
+        return $urlRewrites;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
     public function getProductBySku($sku)
     {
         $table = $this->getTable('catalog_product_entity');
@@ -82,7 +127,7 @@ class Magento implements MagentoInterface
         $rows = $this->rawSql->getRows("
         SELECT *
         FROM {$table}
-        WHERE sku = {$sku}
+        WHERE sku = '{$sku}'
         ;");
 
         $product = null;

@@ -39,6 +39,18 @@ interface MagentoInterface
     public function getUrlRewrites($offset, $limit);
 
     /**
+     * @param $id
+     * @return array
+     */
+    public function getUrlRewritesByProductId($id);
+
+    /**
+     * @param $id
+     * @return array
+     */
+    public function getUrlRewritesByCategoryId($id);
+
+    /**
      * @param $entityId
      * @param $entityTypeCode
      * @param $attributeCode
