@@ -27,6 +27,24 @@ class Magento implements MagentoInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function getCount($table)
+    {
+        $table = $this->getTable($table);
+        $rows = $this->rawSql->getRows("
+        SELECT COUNT(*) AS c
+        FROM {$table}
+        ;");
+        $count = 0;
+        foreach ($rows as $row) {
+            $count = $row['c'];
+        }
+        return $count;
+    }
+
+
+    /**
      * @param $offset
      * @param $limit
      * @return array

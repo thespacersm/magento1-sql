@@ -13,6 +13,12 @@ interface MagentoInterface
 {
 
     /**
+     * @param $table
+     * @return int
+     */
+    public function getCount($table);
+
+    /**
      * @param $offset
      * @param $limit
      * @return array
