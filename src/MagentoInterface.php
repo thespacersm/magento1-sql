@@ -6,6 +6,7 @@ namespace App;
 
 use App\Model\AbstractEntity;
 use App\Model\Attribute;
+use App\Model\Category;
 use App\Model\EntityType;
 use App\Model\Product;
 
@@ -26,10 +27,23 @@ interface MagentoInterface
     public function getProducts($offset, $limit);
 
     /**
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function getCategories($offset, $limit);
+
+    /**
      * @param $id
      * @return Product
      */
     public function getProductById($id);
+
+    /**
+     * @param $id
+     * @return Category
+     */
+    public function getCategoryById($id);
 
     /**
      * @param $sku
@@ -64,6 +78,15 @@ interface MagentoInterface
      * @return mixed
      */
     public function getEavAttributeValue($entityId, $entityTypeCode, $attributeCode, $storeId = 0);
+
+    /**
+     * @param $attributeValue
+     * @param $attributeCode
+     * @param $entityTypeCode
+     * @param int $storeId
+     * @return mixed
+     */
+    public function getEntityByEavAttributeValue($attributeValue, $attributeCode, $entityTypeCode, $storeId = 0);
 
     /**
      * @return array

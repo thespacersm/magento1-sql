@@ -4,6 +4,7 @@ namespace App;
 
 use App\Model\AbstractEntity;
 use App\Model\Attribute;
+use App\Model\Category;
 use App\Model\EntityType;
 use App\Model\Product;
 use App\Model\UrlRewrite;
@@ -70,6 +71,31 @@ class Magento implements MagentoInterface
     }
 
     /**
+     * @param $offset
+     * @param $limit
+     * @return array
+     */
+    public function getCategories($offset, $limit)
+    {
+        $table = $this->getTable('catalog_category_entity');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        LIMIT {$limit}
+        OFFSET {$offset}
+        ;");
+
+        $categories = [];
+        foreach ($rows as $row) {
+            $category = new Category($row, $this);
+            $categories[] = $category;
+        }
+
+        return $categories;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getProductById($id)
@@ -88,6 +114,27 @@ class Magento implements MagentoInterface
         }
 
         return $product;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getCategoryById($id)
+    {
+        $table = $this->getTable('catalog_category_entity');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE entity_id = {$id}
+        ;");
+
+        $category = null;
+        foreach ($rows as $row) {
+            $category = new Category($row, $this);
+        }
+
+        return $category;
     }
 
     /**
@@ -236,6 +283,43 @@ class Magento implements MagentoInterface
                 break;
         }
         return $value;
+    }
+
+
+    /**
+     * @inheritDoc
+     */
+    public function getEntityByEavAttributeValue($attributeValue, $attributeCode, $entityTypeCode, $storeId = 0)
+    {
+        $entityType = $this->getEavEntityTypeByCode($entityTypeCode);
+        $entityTypeId = $entityType->getId();
+        $attribute = $this->getEavAttributeByCode($attributeCode, $entityTypeId);
+        $attributeId = $attribute->getId();
+        $backendType = $attribute->getBackendType();
+
+        $id = null;
+        switch ($backendType) {
+            case "static":
+
+                break;
+            default:
+
+                $table = $this->getTable(sprintf("%s_entity_%s", $entityTypeCode, $backendType));
+                $rows = $this->rawSql->getRows("
+                SELECT *
+                FROM {$table}
+                WHERE attribute_id = {$attributeId}
+                AND store_id = {$storeId}
+                AND value = {$attributeValue}
+                ;");
+
+                if (count($rows)) {
+                    $id = $rows[0]['entity_id'];
+                }
+
+                break;
+        }
+        return $id;
     }
 
     /**
