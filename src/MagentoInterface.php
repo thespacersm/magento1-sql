@@ -71,6 +71,12 @@ interface MagentoInterface
     public function getUrlRewritesByCategoryId($id);
 
     /**
+     * @param $requestPath
+     * @return array
+     */
+    public function getUrlRewritesByRequestPath($requestPath);
+
+    /**
      * @param $entityId
      * @param $entityTypeCode
      * @param $attributeCode

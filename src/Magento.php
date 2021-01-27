@@ -162,6 +162,28 @@ class Magento implements MagentoInterface
     /**
      * @inheritDoc
      */
+    public function getUrlRewritesByRequestPath($requestPath)
+    {
+        $table = $this->getTable('core_url_rewrite');
+
+        $rows = $this->rawSql->getRows("
+        SELECT *
+        FROM {$table}
+        WHERE request_path = '{$requestPath}'
+        ;");
+
+        $urlRewrites = [];
+        foreach ($rows as $row) {
+            $urlRewrite = new UrlRewrite($row, $this);
+            $urlRewrites[] = $urlRewrite;
+        }
+
+        return $urlRewrites;
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function getUrlRewritesByCategoryId($id)
     {
         $table = $this->getTable('core_url_rewrite');
