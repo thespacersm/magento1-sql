@@ -6,7 +6,9 @@
       "email": "capimichi@gmail.com"
     }
   ],
-  "require": {},
+  "require": {
+    "monolog/monolog": "^2.2"
+  },
   "autoload": {
     "psr-4": {
       "App\\": "src/"

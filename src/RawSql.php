@@ -4,10 +4,17 @@
 namespace App;
 
 
+use Psr\Log\LoggerInterface;
+
 class RawSql
 {
 
     protected $connection;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected $logger;
 
     /**
      * RawSql constructor.
@@ -18,18 +25,15 @@ class RawSql
         $this->connection = $conn;
     }
 
-    protected function query($sql)
-    {
-        $r = $this->connection->query($sql);
-        if (!$r) {
-            throw new \Exception(mysqli_error($this->connection));
-        }
-        return $r;
-    }
-
     public function getRows($sql)
     {
         $rows = [];
+
+        if ($this->logger) {
+            $this->logger->info('QUERY', [
+                'sql' => $sql,
+            ]);
+        }
 
         $result = $this->query($sql);
 
@@ -49,5 +53,31 @@ class RawSql
         }
     }
 
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @return RawSql
+     */
+    public function setLogger($logger)
+    {
+        $this->logger = $logger;
+        return $this;
+    }
+
+    protected function query($sql)
+    {
+        $r = $this->connection->query($sql);
+        if (!$r) {
+            throw new \Exception(mysqli_error($this->connection));
+        }
+        return $r;
+    }
 
 }
