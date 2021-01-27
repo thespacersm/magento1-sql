@@ -29,6 +29,12 @@ class RawSql implements RawSqlInterface
     {
         $rows = [];
 
+        if ($this->logger) {
+            $this->logger->info('QUERY', [
+                'sql' => $sql,
+            ]);
+        }
+
         $result = $this->query($sql);
 
         if ($result->num_rows > 0) {
@@ -68,11 +74,6 @@ class RawSql implements RawSqlInterface
 
     protected function query($sql)
     {
-        if ($this->logger) {
-            $this->logger->info('QUERY', [
-                'sql' => $sql,
-            ]);
-        }
         $r = $this->connection->query($sql);
         if (!$r) {
             throw new \Exception(mysqli_error($this->connection));

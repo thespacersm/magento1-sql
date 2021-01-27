@@ -43,14 +43,14 @@ class CachedRawSql extends RawSql implements RawSqlInterface
         $this->cacheBaseKey = sprintf("%s-%s-%s", $host, $dbUser, $dbName);
     }
 
-    protected function query($sql)
+    public function getRows($sql)
     {
         $key = $this->getKey($sql);
         $item = $this->cachePool->getItem($key);
         if (!$item->isHit() || empty($item->get())) {
 
-            $value = parent::query($sql);
-            $item->set($value);
+            $value = parent::getRows($sql);
+            $item->set(json_encode($value));
 
             $d1 = new \DateTime();
             $d2 = new \DateTime();
@@ -59,9 +59,11 @@ class CachedRawSql extends RawSql implements RawSqlInterface
 
             $item->expiresAfter($diff);
             $this->cachePool->save($item);
+        } else {
+            $value = json_decode($item->get(), true);
         }
 
-        return $item->get();
+        return $value;
     }
 
     protected function getKey($sql)
