@@ -332,7 +332,7 @@ class Magento implements MagentoInterface
                 FROM {$table}
                 WHERE attribute_id = {$attributeId}
                 AND store_id = {$storeId}
-                AND value = '{$attributeValue}'
+                AND value = \"{$attributeValue}\"
                 ;");
 
                 if (count($rows)) {
