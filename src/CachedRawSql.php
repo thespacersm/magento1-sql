@@ -4,9 +4,9 @@
 namespace App;
 
 
-use Cache\Adapter\Filesystem\FilesystemCachePool;
-use League\Flysystem\Adapter\Local;
-use League\Flysystem\Filesystem;
+use Phpfastcache\CacheManager;
+use Phpfastcache\Config\Config;
+use Phpfastcache\Core\Pool\ExtendedCacheItemPoolInterface;
 use Psr\Log\LoggerInterface;
 
 class CachedRawSql extends RawSql implements RawSqlInterface
@@ -20,9 +20,9 @@ class CachedRawSql extends RawSql implements RawSqlInterface
     protected $logger;
 
     /**
-     * @var FilesystemCachePool
+     * @var ExtendedCacheItemPoolInterface
      */
-    protected $cachePool;
+    protected $cacheInstance;
 
     /**
      * @var string
@@ -36,31 +36,38 @@ class CachedRawSql extends RawSql implements RawSqlInterface
     {
         $conn = new \mysqli($host, $dbUser, $dbPassword, $dbName, $port);
         $this->connection = $conn;
-        $filesystemAdapter = new Local($cacheDir);
-        $filesystem = new Filesystem($filesystemAdapter);
-        $pool = new FilesystemCachePool($filesystem);
-        $this->cachePool = $pool;
+
+        $cacheInstance = CacheManager::getInstance('files', new Config([
+            'path'             => $cacheDir,
+            "itemDetailedDate" => false,
+        ]));
+        $this->cacheInstance = $cacheInstance;
+
         $this->cacheBaseKey = sprintf("%s-%s-%s", $host, $dbUser, $dbName);
     }
 
     public function getRows($sql)
     {
         $key = $this->getKey($sql);
-        $item = $this->cachePool->getItem($key);
-        if (!$item->isHit() || empty($item->get())) {
 
+        $cachedItem = $this->cacheInstance->getItem($key);
+        if (is_null($cachedItem->get())) {
+
+            if ($this->logger) {
+                $this->logger->info('CACHE MISS');
+            }
             $value = parent::getRows($sql);
-            $item->set(json_encode($value));
 
-            $d1 = new \DateTime();
-            $d2 = new \DateTime();
-            $d2->modify('+30 days');
-            $diff = $d2->diff($d1);
+            $cachedItem
+                ->set(json_encode($value))
+                ->expiresAfter(60 * 60 * 24 * 30);
 
-            $item->expiresAfter($diff);
-            $this->cachePool->save($item);
+            $this->cacheInstance->save($cachedItem);
         } else {
-            $value = json_decode($item->get(), true);
+            if ($this->logger) {
+                $this->logger->info('CACHE HIT');
+            }
+            $value = json_decode($cachedItem->get(), true);
         }
 
         return $value;
