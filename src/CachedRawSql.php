@@ -54,7 +54,9 @@ class CachedRawSql extends RawSql implements RawSqlInterface
         if (is_null($cachedItem->get())) {
 
             if ($this->logger) {
-                $this->logger->info('CACHE MISS');
+                $this->logger->info('CACHE MISS', [
+                    'sql' => $sql,
+                ]);
             }
             $value = parent::getRows($sql);
 
@@ -65,7 +67,9 @@ class CachedRawSql extends RawSql implements RawSqlInterface
             $this->cacheInstance->save($cachedItem);
         } else {
             if ($this->logger) {
-                $this->logger->info('CACHE HIT');
+                $this->logger->info('CACHE HIT', [
+                    'sql' => $sql,
+                ]);
             }
             $value = json_decode($cachedItem->get(), true);
         }
