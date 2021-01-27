@@ -90,7 +90,7 @@ interface MagentoInterface
      * @param $attributeCode
      * @param $entityTypeCode
      * @param int $storeId
-     * @return mixed
+     * @return AbstractEntity
      */
     public function getEntityByEavAttributeValue($attributeValue, $attributeCode, $entityTypeCode, $storeId = 0);
 

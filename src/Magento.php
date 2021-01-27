@@ -319,7 +319,7 @@ class Magento implements MagentoInterface
         $attributeId = $attribute->getId();
         $backendType = $attribute->getBackendType();
 
-        $id = null;
+        $obj = null;
         switch ($backendType) {
             case "static":
 
@@ -337,11 +337,20 @@ class Magento implements MagentoInterface
 
                 if (count($rows)) {
                     $id = $rows[0]['entity_id'];
+
+                    switch ($entityTypeCode) {
+                        case "catalog_product":
+                            $obj = $this->getProductById($id);
+                            break;
+                        case "catalog_category":
+                            $obj = $this->getCategoryById($id);
+                            break;
+                    }
                 }
 
                 break;
         }
-        return $id;
+        return $obj;
     }
 
     /**
