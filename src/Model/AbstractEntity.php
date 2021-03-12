@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Model;
+namespace Magento1Sql\Model;
 
-use App\Magento;
-use App\MagentoInterface;
+use Magento1Sql\Magento;
+use Magento1Sql\MagentoInterface;
 
 abstract class AbstractEntity
 {

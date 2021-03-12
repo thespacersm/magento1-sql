@@ -1,14 +1,14 @@
 <?php
 
 
-namespace App;
+namespace Magento1Sql;
 
 
-use App\Model\AbstractEntity;
-use App\Model\Attribute;
-use App\Model\Category;
-use App\Model\EntityType;
-use App\Model\Product;
+use Magento1Sql\Model\AbstractEntity;
+use Magento1Sql\Model\Attribute;
+use Magento1Sql\Model\Category;
+use Magento1Sql\Model\EntityType;
+use Magento1Sql\Model\Product;
 
 interface MagentoInterface
 {

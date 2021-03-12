@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Model;
+namespace Magento1Sql\Model;
 
 
 class EntityType extends AbstractEntity

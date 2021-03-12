@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App;
+namespace Magento1Sql;
 
 
 use Phpfastcache\CacheManager;
