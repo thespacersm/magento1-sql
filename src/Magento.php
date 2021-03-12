@@ -311,8 +311,11 @@ class Magento implements MagentoInterface
             case "select":
                 if (!empty($value) && is_numeric($value)) {
                     $option = $this->getAttributeOptionById($value);
-                    $values = $option->getValues();
-                    $value = @$values[$storeId];
+                    $value = null;
+                    if($option) {
+                        $values = $option->getValues();
+                        $value = @$values[$storeId];
+                    }
                 }
                 break;
             case "multiselect":
