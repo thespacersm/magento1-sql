@@ -309,7 +309,7 @@ class Magento implements MagentoInterface
 
         switch ($frontendInput) {
             case "select":
-                if (!empty($value)) {
+                if (!empty($value) && is_numeric($value)) {
                     $option = $this->getAttributeOptionById($value);
                     $values = $option->getValues();
                     $value = @$values[$storeId];
@@ -319,9 +319,11 @@ class Magento implements MagentoInterface
                 $ids = explode(",", $value);
                 $value = [];
                 foreach ($ids as $id) {
-                    $option = $this->getAttributeOptionById($id);
-                    $values = $option->getValues();
-                    $value[] = @$values[$storeId];
+                    if (is_numeric($id)) {
+                        $option = $this->getAttributeOptionById($id);
+                        $values = $option->getValues();
+                        $value[] = @$values[$storeId];
+                    }
                 }
                 break;
         }
