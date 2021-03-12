@@ -141,6 +141,12 @@ interface MagentoInterface
     public function getTablePrefix();
 
     /**
+     * @param $optionId
+     * @return mixed
+     */
+    public function getAttributeOptionById($optionId);
+
+    /**
      * @param string|null $tablePrefix
      * @return Magento
      */

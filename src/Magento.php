@@ -4,6 +4,7 @@ namespace Magento1Sql;
 
 use Magento1Sql\Model\AbstractEntity;
 use Magento1Sql\Model\Attribute;
+use Magento1Sql\Model\AttributeOption;
 use Magento1Sql\Model\Category;
 use Magento1Sql\Model\EntityType;
 use Magento1Sql\Model\Product;
@@ -281,6 +282,7 @@ class Magento implements MagentoInterface
         $attribute = $this->getEavAttributeByCode($attributeCode, $entityTypeId);
         $attributeId = $attribute->getId();
         $backendType = $attribute->getBackendType();
+        $frontendInput = $attribute->getFrontendInput();
 
         $value = null;
         switch ($backendType) {
@@ -304,7 +306,53 @@ class Magento implements MagentoInterface
 
                 break;
         }
+
+        switch ($frontendInput) {
+            case "select":
+                $option = $this->getAttributeOptionById($value);
+                $values = $option->getValues();
+                $value = @$values[$storeId];
+                break;
+            case "multiselect":
+                $ids = explode(",", $value);
+                $value = [];
+                foreach ($ids as $id) {
+                    $option = $this->getAttributeOptionById($id);
+                    $values = $option->getValues();
+                    $value[] = @$values[$storeId];
+                }
+                break;
+        }
+
         return $value;
+    }
+
+    /**
+     * @param $optionId
+     * @return mixed
+     */
+    public function getAttributeOptionById($optionId)
+    {
+        $table1 = $this->getTable('eav_attribute_option');
+        $table2 = $this->getTable('ps05_eav_attribute_option_value');
+        $rows = $this->rawSql->getRows("
+                SELECT *
+                FROM {$table1} INNER JOIN {$table2} ON {$table1}.option_id = {$table2}.option_id
+                WHERE {$table1}.option_id = {$optionId}
+                ;");
+
+        $option = null;
+        if (count($rows)) {
+            $values = [];
+            foreach ($rows as $row) {
+                $values[$row['store_id']] = $row['value'];
+            }
+            $option = new AttributeOption([
+                'option_id' => $optionId,
+                'values'    => $values,
+            ]);
+        }
+        return $option;
     }
 
 
