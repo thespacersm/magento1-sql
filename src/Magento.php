@@ -334,7 +334,7 @@ class Magento implements MagentoInterface
     public function getAttributeOptionById($optionId)
     {
         $table1 = $this->getTable('eav_attribute_option');
-        $table2 = $this->getTable('ps05_eav_attribute_option_value');
+        $table2 = $this->getTable('eav_attribute_option_value');
         $rows = $this->rawSql->getRows("
                 SELECT *
                 FROM {$table1} INNER JOIN {$table2} ON {$table1}.option_id = {$table2}.option_id
