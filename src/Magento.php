@@ -309,9 +309,11 @@ class Magento implements MagentoInterface
 
         switch ($frontendInput) {
             case "select":
-                $option = $this->getAttributeOptionById($value);
-                $values = $option->getValues();
-                $value = @$values[$storeId];
+                if (!empty($value)) {
+                    $option = $this->getAttributeOptionById($value);
+                    $values = $option->getValues();
+                    $value = @$values[$storeId];
+                }
                 break;
             case "multiselect":
                 $ids = explode(",", $value);
