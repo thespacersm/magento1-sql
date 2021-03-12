@@ -350,7 +350,7 @@ class Magento implements MagentoInterface
             $option = new AttributeOption([
                 'option_id' => $optionId,
                 'values'    => $values,
-            ]);
+            ], $this);
         }
         return $option;
     }
